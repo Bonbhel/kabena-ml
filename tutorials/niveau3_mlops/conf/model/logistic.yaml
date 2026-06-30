@@ -1,0 +1,5 @@
+# conf/model/logistic.yaml
+name: logistic_regression
+C: 1.0
+max_iter: 1
+framework: sklearn

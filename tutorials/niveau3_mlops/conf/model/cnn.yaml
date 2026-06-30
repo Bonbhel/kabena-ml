@@ -1,0 +1,13 @@
+# tutorials/niveau3_mlops/conf/model/cnn.yaml
+# =============================================
+# Configuration CNN vision — switch PyTorch / TensorFlow
+
+name: cnn
+framework: torch        # ← "torch" ou "tf"
+channels: [32, 64, 128]
+kernel_size: 3
+use_batchnorm: true
+dropout: 0.5
+n_classes: 10           # CIFAR-10
+input_channels: 3       # RGB
+image_size: 32          # 32×32 pixels

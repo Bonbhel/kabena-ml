@@ -1,0 +1,38 @@
+# tutorials/niveau3_mlops/conf/config.yaml
+# ==========================================
+# Configuration Hydra pour K-ABENA MLOps
+# Usage : python train_mlops.py kabena.K=0.20 kabena.N=0.3 model=mlp
+
+defaults:
+  - model: mlp
+  - dataset: classification
+  - _self_
+
+# ── Configuration K-ABENA ────────────────────────────────────────────────────
+kabena:
+  K: 0.20             # seuil absolu (float, pas "auto" en MLOps)
+  N: 0.0              # proportion de mineures conservées [0, 1]
+  min_active: 1       # protection m >= 1
+  task: classification
+  stratified: false
+  verbose: false
+
+# ── Entraînement ─────────────────────────────────────────────────────────────
+training:
+  epochs: 100
+  lr: 0.05
+  batch_size: 64
+  seed: 42
+
+# ── MLflow ────────────────────────────────────────────────────────────────────
+mlflow:
+  experiment_name: kabena_experiments
+  tracking_uri: ./mlruns
+  log_model: true
+
+# ── Sorties ───────────────────────────────────────────────────────────────────
+output:
+  log_dir: ./logs/
+  plot: true
+  save_model: true
+  model_path: ./models/kabena_model.pkl

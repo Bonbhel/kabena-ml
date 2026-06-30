@@ -1,0 +1,43 @@
+# experiments/ch14/niveau3_mlops/conf/ch14_config.yaml
+# =====================================================
+# Configuration Hydra pour la reproduction du Chapitre 14
+# Usage : python reproduce_ch14_mlops.py framework=torch dataset=cifar10 variant=adaptive
+
+defaults:
+  - _self_
+
+# Framework : "torch" ou "tf" — même résultats, syntaxe K-ABENA différente
+framework: torch
+
+# Dataset
+dataset:
+  name: cifar10   # "cifar10" | "cifar100"
+
+# Modèle
+model:
+  name: resnet18  # "resnet18" | "resnet50"
+
+# Configuration K-ABENA
+kabena:
+  variant: adaptive   # "standard" | "ka_n0" | "ka_n4" | "adaptive" | "adam_ka"
+  K: 0.0              # 0.0 = calibrage automatique à l'époque 1
+  N: 0.3              # proportion de mineures conservées [0,1]
+
+# Entraînement
+training:
+  epochs:     10        # 200 pour résultats complets (CIFAR), 90 pour ImageNet
+  batch_size: 128
+  seed:       42
+  optimizer:  sgd       # "sgd" | "adam" (adam_ka utilise Adam automatiquement)
+
+# MLflow
+mlflow_uri: ./mlruns
+
+# Résultats de référence ch.14 (rappel)
+# CIFAR-10 :
+#   standard  → 93.2%  gain=0%
+#   adaptive  → 94.9%  gain=19.3%  ← gain de +1.7 points
+#   adam_ka   → 95.1%  gain=17.8%  ← meilleur absolu
+# CIFAR-100 :
+#   standard  → 74.1%  gain=0%
+#   adaptive  → 76.4%  gain=17.9%  ← gain de +2.3 points
