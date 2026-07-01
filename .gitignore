@@ -15,10 +15,6 @@ outputs/
 # macOS
 .DS_Store
 **/.DS_Store
+
+# Dev local (non versionné)
 constraints-dev-local.txt
-.coverage
-coverage.xml
-htmlcov/
-.coverage
-coverage.xml
-htmlcov/
