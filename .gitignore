@@ -11,3 +11,4 @@ outputs/
 .hydra/
 *.log
 .dvc/cache/
+.DS_Store
