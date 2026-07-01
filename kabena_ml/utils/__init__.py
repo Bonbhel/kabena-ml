@@ -1,4 +1,3 @@
-# from kabena_ml.utils.logger import KabenaLogger, benchmark_KN, plot_stats
 from kabena_ml.utils.logger import (
     KabenaLogger as KabenaLogger,
 )

@@ -1,6 +1,3 @@
-# from kabena_ml.core.config import KabenaConfig
-# from kabena_ml.core.filter import calibrate_K, calibrate_K_noisy, kabena_filter, kabena_safe
-
 from kabena_ml.core.config import KabenaConfig as KabenaConfig
 from kabena_ml.core.filter import (
     calibrate_K as calibrate_K,

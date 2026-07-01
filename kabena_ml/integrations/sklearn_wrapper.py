@@ -132,8 +132,10 @@ class KabenaWrapper(BaseEstimator):
             return np.abs(y - pred)
         else:
             proba = self.estimator_.predict_proba(X)
-            y_int = y.astype(int)
-            p_true = proba[np.arange(len(y)), y_int]
+            # Mapper chaque label vers sa position réelle dans estimator_.classes_
+            class_to_idx = {c: i for i, c in enumerate(self.estimator_.classes_)}
+            col_idx = np.array([class_to_idx[label] for label in y])
+            p_true = proba[np.arange(len(y)), col_idx]
             return -np.log(np.clip(p_true, 1e-9, 1.0))
 
     def _stratified_filter(self, errors, y, K_) -> np.ndarray:
@@ -147,7 +149,6 @@ class KabenaWrapper(BaseEstimator):
 
 # ── Alias court ──────────────────────────────────────────────────────────────
 KabenaSKLearn = KabenaWrapper
-# KabenaStratified = lambda est, **kw: KabenaWrapper(est, stratified=True, **kw)
 
 
 def KabenaStratified(est, **kw):

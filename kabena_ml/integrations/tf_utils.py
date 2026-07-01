@@ -136,7 +136,6 @@ class KabenaTFTrainer:
         val_data: Optional[tuple] = None,
     ) -> list[dict]:
         """Boucle GradientTape + K-ABENA."""
-        # n = len(y)
         ds = tf.data.Dataset.from_tensor_slices((X, y)).batch(batch_size).shuffle(1000)
 
         for epoch in range(epochs):

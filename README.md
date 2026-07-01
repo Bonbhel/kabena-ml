@@ -112,8 +112,8 @@ K = calibrate_K_noisy(losses_epoch1, estimated_noise_pct=0.30)
 ## Auteur
 
 **M. Bonbhel** — YekoElite University × NeuroSoft IA  
-bonbhel@gmail.com | +1 418 271 0819  
-GitHub : [Bonbhel/kabena-ml](https://github.com/Bonbhel/kabena-ml)
+contact@neurosoft-ia.com | +1 418 271 0819  
+GitHub : [yekoelite/kabena-ml](https://github.com/yekoelite/kabena-ml)
 
 ---
 
