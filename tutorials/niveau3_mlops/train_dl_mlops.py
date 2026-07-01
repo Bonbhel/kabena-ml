@@ -81,7 +81,7 @@ def _mlp_torch(X_tr, X_te, y_tr, y_te, K, N, epochs, lr, verbose, model_cfg):
     import torch
     import torch.nn as nn
     import torch.nn.functional as F
-    from kabena_ml.integrations.torch_utils import kabena_filter_torch
+    from kabena.integrations.torch_utils import kabena_filter_torch
 
     hidden = getattr(model_cfg, "hidden_sizes", [128, 64])
     layers = []; prev = X_tr.shape[1]
@@ -117,8 +117,8 @@ def _mlp_torch(X_tr, X_te, y_tr, y_te, K, N, epochs, lr, verbose, model_cfg):
 # ─── MLP TensorFlow ──────────────────────────────────────────────────────────
 def _mlp_tf(X_tr, X_te, y_tr, y_te, K, N, epochs, lr, verbose, model_cfg):
     import tensorflow as tf
-    from kabena_ml.integrations.tf_utils import KabenaTFTrainer
-    from kabena_ml import KabenaConfig
+    from kabena.integrations.tf_utils import KabenaTFTrainer
+    from kabena import KabenaConfig
 
     hidden = getattr(model_cfg, "hidden_sizes", [128, 64])
     dropout = getattr(model_cfg, "dropout", 0.2)
@@ -149,7 +149,7 @@ def _transformer_torch(X_tr, X_te, y_tr, y_te, K, N, epochs, lr, verbose, model_
     import torch
     import torch.nn as nn
     import torch.nn.functional as F
-    from kabena_ml.integrations.torch_utils import kabena_filter_torch
+    from kabena.integrations.torch_utils import kabena_filter_torch
 
     seq_len  = getattr(model_cfg, "seq_len", 5)
     d_model  = getattr(model_cfg, "d_model", 64)
@@ -195,8 +195,8 @@ def _transformer_torch(X_tr, X_te, y_tr, y_te, K, N, epochs, lr, verbose, model_
 # ─── Transformer TensorFlow ──────────────────────────────────────────────────
 def _transformer_tf(X_tr, X_te, y_tr, y_te, K, N, epochs, lr, verbose, model_cfg):
     import tensorflow as tf
-    from kabena_ml.integrations.tf_utils import KabenaTFTrainer
-    from kabena_ml import KabenaConfig
+    from kabena.integrations.tf_utils import KabenaTFTrainer
+    from kabena import KabenaConfig
 
     seq_len  = getattr(model_cfg, "seq_len", 5)
     d_model  = getattr(model_cfg, "d_model", 64)

@@ -1,5 +1,5 @@
 """
-kabena_ml.core.config
+kabena.core.config
 =====================
 Configuration centralisée K-ABENA — lecture depuis dict, YAML ou JSON.
 """

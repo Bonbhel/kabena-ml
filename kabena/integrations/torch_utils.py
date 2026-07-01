@@ -1,5 +1,5 @@
 """
-kabena_ml.integrations.torch_utils
+kabena.integrations.torch_utils
 ====================================
 Intégration PyTorch — coût syntaxique : 2 lignes.
 
@@ -27,8 +27,8 @@ except ImportError:
 
 import numpy as np
 
-from kabena_ml.core.config import KabenaConfig
-from kabena_ml.core.filter import kabena_filter, kabena_safe
+from kabena.core.config import KabenaConfig
+from kabena.core.filter import kabena_filter, kabena_safe
 
 
 def _require_torch():

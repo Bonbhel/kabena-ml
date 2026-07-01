@@ -1,11 +1,11 @@
-# Contributing to kabena-ml
+# Contributing to kabena
 
 Thank you for your interest in contributing to K-ABENA!
 
 ## Quick start
 
 ```bash
-git clone https://github.com/yekoelite/kabena-ml.git
+git clone https://github.com/Bonbhel/kabena-ml.git
 cd kabena-ml
 pip install -e ".[dev]"
 pytest tests/ -v
@@ -21,8 +21,8 @@ pytest tests/ -v
 ## Code style
 
 ```bash
-black kabena_ml/ tests/
-ruff check kabena_ml/ tests/
+black kabena/ tests/
+ruff check kabena/ tests/
 ```
 
 ## Contact

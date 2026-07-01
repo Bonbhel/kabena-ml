@@ -11,8 +11,8 @@ Exécution :
 import numpy as np
 import pytest
 
-from kabena_ml.core.config import KabenaConfig
-from kabena_ml.core.filter import calibrate_K, kabena_filter, kabena_safe
+from kabena.core.config import KabenaConfig
+from kabena.core.filter import calibrate_K, kabena_filter, kabena_safe
 
 
 # ── Fixtures ──────────────────────────────────────────────────────────────────

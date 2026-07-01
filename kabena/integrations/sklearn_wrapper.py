@@ -1,5 +1,5 @@
 """
-kabena_ml.integrations.sklearn_wrapper
+kabena.integrations.sklearn_wrapper
 =======================================
 Intégration scikit-learn — coût syntaxique minimal.
 
@@ -20,7 +20,7 @@ import numpy as np
 from sklearn.base import BaseEstimator, clone
 from sklearn.utils.validation import check_is_fitted
 
-from kabena_ml.core.filter import calibrate_K, kabena_safe
+from kabena.core.filter import calibrate_K, kabena_safe
 
 
 class KabenaWrapper(BaseEstimator):

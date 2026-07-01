@@ -38,8 +38,8 @@ from torch.utils.data import DataLoader
 
 # kabena-ml
 sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
-from kabena_ml.core.filter import calibrate_K
-from kabena_ml.integrations.torch_utils import kabena_filter_torch
+from kabena.core.filter import calibrate_K
+from kabena.integrations.torch_utils import kabena_filter_torch
 
 
 # ═══════════════════════════════════════════════════════════════════════════

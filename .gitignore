@@ -11,3 +11,14 @@ outputs/
 .hydra/
 *.log
 .dvc/cache/
+
+# macOS
+.DS_Store
+**/.DS_Store
+constraints-dev-local.txt
+.coverage
+coverage.xml
+htmlcov/
+.coverage
+coverage.xml
+htmlcov/

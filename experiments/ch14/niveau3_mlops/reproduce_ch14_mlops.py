@@ -54,8 +54,8 @@ def run_pytorch(cfg) -> dict:
     import torch, torch.nn.functional as F
     import torchvision, torchvision.transforms as T
     sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
-    from kabena_ml.core.filter import calibrate_K
-    from kabena_ml.integrations.torch_utils import kabena_filter_torch
+    from kabena.core.filter import calibrate_K
+    from kabena.integrations.torch_utils import kabena_filter_torch
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     torch.manual_seed(cfg.training.seed); np.random.seed(cfg.training.seed)
@@ -147,9 +147,9 @@ def run_pytorch(cfg) -> dict:
 def run_tensorflow(cfg) -> dict:
     import tensorflow as tf
     sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
-    from kabena_ml.core.filter import calibrate_K
-    from kabena_ml.integrations.tf_utils import KabenaCallback
-    from kabena_ml import KabenaConfig
+    from kabena.core.filter import calibrate_K
+    from kabena.integrations.tf_utils import KabenaCallback
+    from kabena import KabenaConfig
 
     tf.random.set_seed(cfg.training.seed); np.random.seed(cfg.training.seed)
 

@@ -11,7 +11,7 @@ from sklearn.linear_model import LogisticRegression, Ridge
 from sklearn.model_selection import train_test_split
 
 pytest.importorskip("sklearn")
-from kabena_ml.integrations.sklearn_wrapper import KabenaWrapper
+from kabena.integrations.sklearn_wrapper import KabenaWrapper
 
 
 @pytest.fixture

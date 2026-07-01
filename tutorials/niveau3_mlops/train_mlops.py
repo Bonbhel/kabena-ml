@@ -51,8 +51,8 @@ def get_data(cfg):
 def train_sklearn(cfg, X_tr, X_te, y_tr, y_te):
     """Entraînement scikit-learn + K-ABENA."""
     from sklearn.linear_model import LogisticRegression, Ridge
-    from kabena_ml.integrations.sklearn_wrapper import KabenaWrapper
-    from kabena_ml import calibrate_K
+    from kabena.integrations.sklearn_wrapper import KabenaWrapper
+    from kabena import calibrate_K
 
     if cfg.model.name == "logistic_regression":
         base = LogisticRegression(C=cfg.model.C, max_iter=cfg.model.max_iter)
@@ -85,8 +85,8 @@ def train_torch(cfg, X_tr, X_te, y_tr, y_te):
     import torch
     import torch.nn as nn
     import torch.nn.functional as F
-    from kabena_ml import KabenaConfig
-    from kabena_ml.integrations.torch_utils import KabenaTrainer
+    from kabena import KabenaConfig
+    from kabena.integrations.torch_utils import KabenaTrainer
 
     # Modèle MLP
     hidden = cfg.model.hidden_sizes

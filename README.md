@@ -1,11 +1,11 @@
-# kabena-ml
+# kabena
 
 **K-ABENA** — K-Adaptive Backpropagation with Error-based N-exclusion Algorithm
 
 > *"Gradient intelligent : ignorer les petites erreurs pour apprendre plus vite."*
 > — YekoElite University × NeuroSoft IA
 
-[![PyPI version](https://badge.fury.io/py/kabena-ml.svg)](https://pypi.org/project/kabena-ml/)
+[![PyPI version](https://badge.fury.io/py/kabena.svg)](https://pypi.org/project/kabena/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://python.org)
 
@@ -14,11 +14,12 @@
 ## Installation en 30 secondes
 
 ```bash
-pip install kabena-ml                # core (NumPy uniquement)
-pip install kabena-ml[torch]         # + PyTorch
-pip install kabena-ml[tf]            # + TensorFlow
-pip install kabena-ml[all]           # tout inclus
+pip install kabena                # core (NumPy uniquement)
+pip install kabena[torch]         # + PyTorch
+pip install kabena[tf]            # + TensorFlow
+pip install kabena[all]           # tout inclus
 ```
+
 
 ## Coût d'adoption : 2 lignes de code
 
@@ -87,7 +88,7 @@ PyTorch + TensorFlow/Keras + **HuggingFace `Trainer`** (notebooks 13–14).
 K-ABENA présente un effet d'auto-protection empirique sous bruit de labels : l'avantage
 sur SGD standard s'**amplifie** avec le niveau de bruit (+1.7 pts à 0% de bruit, +8.6 pts
 à 30–40%). Détails complets, mécanisme et limites : Chapitre 16B du livre ·
-[`calibrate_K_noisy()`](kabena_ml/core/filter.py) ·
+[`calibrate_K_noisy()`](kabena/core/filter.py) ·
 [notebooks 13–14](tutorials/niveau1_notebook/).
 
 > ⚠️ **Limite L10 — à lire avant usage en production.** Les valeurs par défaut de
@@ -101,7 +102,7 @@ sur SGD standard s'**amplifie** avec le niveau de bruit (+1.7 pts à 0% de bruit
 > déployer en production.
 
 ```python
-from kabena_ml import calibrate_K_noisy
+from kabena import calibrate_K_noisy
 
 # Calibrage adapté au bruit estimé (30% de labels corrompus)
 K = calibrate_K_noisy(losses_epoch1, estimated_noise_pct=0.30)
@@ -113,7 +114,7 @@ K = calibrate_K_noisy(losses_epoch1, estimated_noise_pct=0.30)
 
 **M. Bonbhel** — YekoElite University × NeuroSoft IA  
 contact@neurosoft-ia.com | +1 418 271 0819  
-GitHub : [yekoelite/kabena-ml](https://github.com/yekoelite/kabena-ml)
+GitHub : [Bonbhel/kabena-ml](https://github.com/Bonbhel/kabena-ml)
 
 ---
 

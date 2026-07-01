@@ -34,9 +34,9 @@ import numpy as np
 import tensorflow as tf
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
-from kabena_ml.core.filter import calibrate_K
-from kabena_ml.integrations.tf_utils import KabenaCallback, KabenaTFTrainer
-from kabena_ml import KabenaConfig
+from kabena.core.filter import calibrate_K
+from kabena.integrations.tf_utils import KabenaCallback, KabenaTFTrainer
+from kabena import KabenaConfig
 
 
 # ═══════════════════════════════════════════════════════════════════════════

@@ -19,9 +19,9 @@ from sklearn.metrics import (mean_squared_error, classification_report,
                               f1_score, accuracy_score)
 from sklearn.preprocessing import StandardScaler
 
-from kabena_ml import calibrate_K, KabenaConfig
-from kabena_ml.integrations.sklearn_wrapper import KabenaWrapper
-from kabena_ml.utils.logger import KabenaLogger, plot_stats, benchmark_KN
+from kabena import calibrate_K, KabenaConfig
+from kabena.integrations.sklearn_wrapper import KabenaWrapper
+from kabena.utils.logger import KabenaLogger, plot_stats, benchmark_KN
 
 
 # ─────────────────────────────────────────────────────────────────────────────

@@ -1,5 +1,5 @@
 """
-kabena_ml.core.filter
+kabena.core.filter
 =====================
 Primitives K-ABENA pures NumPy — compatibles numpy, scipy, JAX (jnp).
 

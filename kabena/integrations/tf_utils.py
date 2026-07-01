@@ -1,5 +1,5 @@
 """
-kabena_ml.integrations.tf_utils
+kabena.integrations.tf_utils
 ================================
 Intégration TensorFlow/Keras — coût syntaxique minimal.
 
@@ -23,8 +23,8 @@ except ImportError:
 
 import numpy as np
 
-from kabena_ml.core.config import KabenaConfig
-from kabena_ml.core.filter import kabena_filter
+from kabena.core.config import KabenaConfig
+from kabena.core.filter import kabena_filter
 
 
 def _require_tf():

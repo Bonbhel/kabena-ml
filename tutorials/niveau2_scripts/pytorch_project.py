@@ -21,11 +21,11 @@ from sklearn.datasets import make_classification
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score
 
-from kabena_ml import calibrate_K, KabenaConfig
-from kabena_ml.integrations.torch_utils import (
+from kabena import calibrate_K, KabenaConfig
+from kabena.integrations.torch_utils import (
     kabena_filter_torch, kabena_safe_torch, KabenaTrainer
 )
-from kabena_ml.utils.logger import KabenaLogger, plot_stats
+from kabena.utils.logger import KabenaLogger, plot_stats
 
 
 # ─── Architectures ────────────────────────────────────────────────────────────
@@ -188,7 +188,7 @@ def run_xgboost(args):
         print("xgboost requis : pip install xgboost")
         return
 
-    from kabena_ml import kabena_filter
+    from kabena import kabena_filter
 
     X_np, y_np = make_classification(n_samples=3000, n_features=20, random_state=42)
     X_np = StandardScaler().fit_transform(X_np)

@@ -11,8 +11,8 @@ torch = pytest.importorskip("torch")
 import torch.nn as nn
 import torch.nn.functional as F
 
-from kabena_ml import KabenaConfig
-from kabena_ml.integrations.torch_utils import KabenaTrainer, kabena_filter_torch, kabena_safe_torch
+from kabena import KabenaConfig
+from kabena.integrations.torch_utils import KabenaTrainer, kabena_filter_torch, kabena_safe_torch
 
 
 @pytest.fixture

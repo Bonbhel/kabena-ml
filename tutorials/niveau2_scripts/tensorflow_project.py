@@ -17,9 +17,9 @@ from sklearn.datasets import make_classification
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 
-from kabena_ml import calibrate_K, KabenaConfig
-from kabena_ml.integrations.tf_utils import KabenaCallback, KabenaTFTrainer
-from kabena_ml.utils.logger import KabenaLogger, plot_stats
+from kabena import calibrate_K, KabenaConfig
+from kabena.integrations.tf_utils import KabenaCallback, KabenaTFTrainer
+from kabena.utils.logger import KabenaLogger, plot_stats
 
 
 def build_model(input_dim: int, n_classes: int = 2) -> tf.keras.Model:

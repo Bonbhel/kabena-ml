@@ -53,7 +53,7 @@ def mlp_pytorch(X_tr, X_te, y_tr, y_te, K, N, epochs, lr, verbose):
     import torch
     import torch.nn as nn
     import torch.nn.functional as F
-    from kabena_ml.integrations.torch_utils import kabena_filter_torch
+    from kabena.integrations.torch_utils import kabena_filter_torch
 
     model = nn.Sequential(
         nn.Linear(X_tr.shape[1], 128), nn.ReLU(), nn.Dropout(0.2),
@@ -90,8 +90,8 @@ def mlp_pytorch(X_tr, X_te, y_tr, y_te, K, N, epochs, lr, verbose):
 
 def mlp_tensorflow(X_tr, X_te, y_tr, y_te, K, N, epochs, lr, verbose):
     import tensorflow as tf
-    from kabena_ml.integrations.tf_utils import KabenaTFTrainer
-    from kabena_ml import KabenaConfig
+    from kabena.integrations.tf_utils import KabenaTFTrainer
+    from kabena import KabenaConfig
 
     # Même architecture que PyTorch
     model = tf.keras.Sequential([
@@ -123,7 +123,7 @@ def cnn_pytorch(K, N, epochs, lr, verbose):
     import torch
     import torch.nn as nn
     import torch.nn.functional as F
-    from kabena_ml.integrations.torch_utils import kabena_filter_torch
+    from kabena.integrations.torch_utils import kabena_filter_torch
 
     try:
         import torchvision, torchvision.transforms as T
@@ -181,7 +181,7 @@ def cnn_pytorch(K, N, epochs, lr, verbose):
 def cnn_tensorflow(K, N, epochs, lr, verbose):
     """CNN CIFAR-10 avec K-ABENA — TensorFlow."""
     import tensorflow as tf
-    from kabena_ml.integrations.tf_utils import KabenaCallback
+    from kabena.integrations.tf_utils import KabenaCallback
 
     (X_tr, y_tr), _ = tf.keras.datasets.cifar10.load_data()
     X_tr = (X_tr.astype("float32") / 127.5 - 1.0)
@@ -225,7 +225,7 @@ def transformer_pytorch(X_tr, X_te, y_tr, y_te, K, N, epochs, lr, verbose):
     import torch
     import torch.nn as nn
     import torch.nn.functional as F
-    from kabena_ml.integrations.torch_utils import kabena_filter_torch
+    from kabena.integrations.torch_utils import kabena_filter_torch
 
     # Reshape X en séquences : (n, seq=5, d=4) pour démo légère
     seq_len = 5
@@ -274,8 +274,8 @@ def transformer_pytorch(X_tr, X_te, y_tr, y_te, K, N, epochs, lr, verbose):
 def transformer_tensorflow(X_tr, X_te, y_tr, y_te, K, N, epochs, lr, verbose):
     """Transformer Encoder pour séquences d'embeddings — TensorFlow."""
     import tensorflow as tf
-    from kabena_ml.integrations.tf_utils import KabenaTFTrainer
-    from kabena_ml import KabenaConfig
+    from kabena.integrations.tf_utils import KabenaTFTrainer
+    from kabena import KabenaConfig
 
     seq_len = 5
     d_model = (X_tr.shape[1] // seq_len) * seq_len
@@ -310,7 +310,7 @@ MIGRATION_GUIDE = """
 ╠══════════════╦══════════════════════════════╦═══════════════════════════╣
 ║ Concept      ║ PyTorch                      ║ TensorFlow                ║
 ╠══════════════╬══════════════════════════════╬═══════════════════════════╣
-║ Import       ║ from kabena_ml.integrations  ║ from kabena_ml.integrations║
+║ Import       ║ from kabena.integrations  ║ from kabena.integrations║
 ║              ║   .torch_utils import        ║   .tf_utils import        ║
 ║              ║   kabena_filter_torch        ║   KabenaCallback          ║
 ╠══════════════╬══════════════════════════════╬═══════════════════════════╣

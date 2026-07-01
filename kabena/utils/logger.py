@@ -1,5 +1,5 @@
 """
-kabena_ml.utils.logger
+kabena.utils.logger
 =======================
 Monitoring K-ABENA — KabenaLogger, plot_stats, kabena_report.
 """
@@ -160,7 +160,7 @@ def benchmark_KN(
     """
     from sklearn.metrics import accuracy_score, f1_score, mean_squared_error
 
-    from kabena_ml.integrations.sklearn_wrapper import KabenaWrapper
+    from kabena.integrations.sklearn_wrapper import KabenaWrapper
 
     K_range = K_range or [0.05, 0.10, 0.15, 0.20, 0.30]
     N_range = N_range or [0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
