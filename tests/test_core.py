@@ -10,8 +10,9 @@ Exécution :
 
 import numpy as np
 import pytest
-from kabena_ml.core.filter import kabena_filter, kabena_safe, calibrate_K
+
 from kabena_ml.core.config import KabenaConfig
+from kabena_ml.core.filter import calibrate_K, kabena_filter, kabena_safe
 
 
 # ── Fixtures ──────────────────────────────────────────────────────────────────
@@ -23,16 +24,15 @@ def errors_sample():
 
 # ── Tests kabena_filter ───────────────────────────────────────────────────────
 class TestKabenaFilter:
-
     def test_basic_N0(self, errors_sample):
         """N=0 : toutes les mineures exclues."""
         active = kabena_filter(errors_sample, K=0.15, N=0.0)
         # Mineures : 0.05, 0.12, 0.03 (indices 0, 2, 4)
-        assert not active[0]   # 0.05 <= 0.15 → exclu
-        assert not active[2]   # 0.12 <= 0.15 → exclu
-        assert not active[4]   # 0.03 <= 0.15 → exclu
-        assert active[1]       # 0.82 > 0.15  → actif
-        assert active[3]       # 0.41 > 0.15  → actif
+        assert not active[0]  # 0.05 <= 0.15 → exclu
+        assert not active[2]  # 0.12 <= 0.15 → exclu
+        assert not active[4]  # 0.03 <= 0.15 → exclu
+        assert active[1]  # 0.82 > 0.15  → actif
+        assert active[3]  # 0.41 > 0.15  → actif
 
     def test_N1_all_active(self, errors_sample):
         """N=1 : aucune exclusion — identique au gradient standard."""
@@ -61,8 +61,8 @@ class TestKabenaFilter:
         """N=0.5 : environ 50% des mineures conservées."""
         active = kabena_filter(errors_sample, K=0.15, N=0.5)
         # 3 mineures → ⌊0.5 * 3⌋ = 1 exclue, 2 conservées
-        n_minor  = (errors_sample <= 0.15).sum()
-        n_excl   = int((1 - 0.5) * n_minor)  # = 1
+        n_minor = (errors_sample <= 0.15).sum()
+        n_excl = int((1 - 0.5) * n_minor)  # = 1
         n_active = len(errors_sample) - n_excl
         assert active.sum() == n_active
 
@@ -75,7 +75,7 @@ class TestKabenaFilter:
         assert not active.any()
 
         # N=2/3 → garder 1 mineure sur 3 : la plus petite (0.02)
-        active = kabena_filter(errors, K=0.15, N=1/3)
+        active = kabena_filter(errors, K=0.15, N=1 / 3)
         # n_excl = int((1 - 1/3) * 3) = int(2.0) = 2
         # conservée : index 1 (0.02, la plus petite)
         assert active.sum() == 1
@@ -89,7 +89,6 @@ class TestKabenaFilter:
 
 # ── Tests kabena_safe ─────────────────────────────────────────────────────────
 class TestKabenaSafe:
-
     def test_guarantees_min_active(self):
         """Garantit toujours m >= min_active."""
         errors = np.array([0.01, 0.02, 0.03])
@@ -116,7 +115,6 @@ class TestKabenaSafe:
 
 # ── Tests calibrate_K ─────────────────────────────────────────────────────────
 class TestCalibrateK:
-
     def test_percentile(self):
         """K = percentile 10% des pertes."""
         losses = np.random.exponential(0.5, 1000)
@@ -148,7 +146,6 @@ class TestCalibrateK:
 
 # ── Tests KabenaConfig ────────────────────────────────────────────────────────
 class TestKabenaConfig:
-
     def test_defaults(self):
         cfg = KabenaConfig()
         assert cfg.K == 0.15
@@ -183,7 +180,7 @@ class TestKabenaConfig:
         assert cfg.K == 0.20
 
     def test_json_roundtrip(self, tmp_path):
-        cfg  = KabenaConfig(K=0.20, N=0.3, task="classification")
+        cfg = KabenaConfig(K=0.20, N=0.3, task="classification")
         path = tmp_path / "cfg.json"
         cfg.to_json(path)
         cfg2 = KabenaConfig.from_json(path)
@@ -192,7 +189,7 @@ class TestKabenaConfig:
 
     def test_yaml_roundtrip(self, tmp_path):
         pytest.importorskip("yaml")
-        cfg  = KabenaConfig(K=0.15, N=0.5, task="regression")
+        cfg = KabenaConfig(K=0.15, N=0.5, task="regression")
         path = tmp_path / "cfg.yaml"
         cfg.to_yaml(path)
         cfg2 = KabenaConfig.from_yaml(path)
@@ -206,29 +203,30 @@ class TestKabenaConfig:
 
 # ── Tests d'intégration rapide ─────────────────────────────────────────────────
 class TestIntegration:
-
     def test_filter_on_regression(self):
         """K-ABENA filtre correctement des résidus de régression."""
         np.random.seed(42)
-        n   = 100
+        n = 100
         eps = np.abs(np.random.normal(0, 0.5, n))
-        K   = calibrate_K(eps, target_pct=0.10)
+        K = calibrate_K(eps, target_pct=0.10)
         active, m = kabena_safe(eps, K=K, N=0.0)
 
         assert m >= 1
         assert active.sum() == m
         # Les observations actives ont toutes |eps| > K
-        assert (eps[active] > K).all() or (eps[active] <= K).any() is False \
-               or True  # kabena_safe peut conserver des mineures pour garantir m>=1
+        assert (
+            (eps[active] > K).all() or (eps[active] <= K).any() is False or True
+        )  # kabena_safe peut conserver des mineures pour garantir m>=1
 
     def test_gain_formula(self):
         """Gain = (1-N)*p_K selon la formule théorique."""
         np.random.seed(7)
         errors = np.random.exponential(0.3, 500)
-        K, N   = 0.15, 0.0
+        K, N = 0.15, 0.0
         active = kabena_filter(errors, K=K, N=N)
-        p_K    = (errors <= K).mean()
+        p_K = (errors <= K).mean()
         gain_measured = 1 - active.mean()
-        gain_theory   = (1 - N) * p_K
-        assert abs(gain_measured - gain_theory) < 0.01, \
-               f"Gain mesuré {gain_measured:.3f} ≠ théorique {gain_theory:.3f}"
+        gain_theory = (1 - N) * p_K
+        assert (
+            abs(gain_measured - gain_theory) < 0.01
+        ), f"Gain mesuré {gain_measured:.3f} ≠ théorique {gain_theory:.3f}"

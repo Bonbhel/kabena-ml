@@ -8,8 +8,10 @@ Coût syntaxique minimal :
 """
 
 from __future__ import annotations
-import numpy as np
+
 from typing import Union
+
+import numpy as np
 
 Array = Union[np.ndarray, list]
 
@@ -51,15 +53,15 @@ def kabena_filter(
     array([ True,  True, False,  True, False,  True])
     """
     abs_errors = np.asarray(abs_errors, dtype=float)
-    minor_idx  = np.where(abs_errors <= K)[0]
+    minor_idx = np.where(abs_errors <= K)[0]
 
     if len(minor_idx) == 0:
         return np.ones(len(abs_errors), dtype=bool)  # rien à exclure
 
     # Tri décroissant : proches de K exclus en premier
-    order        = np.argsort(abs_errors[minor_idx])[::-1]
+    order = np.argsort(abs_errors[minor_idx])[::-1]
     minor_sorted = minor_idx[order]
-    n_excl       = int((1.0 - N) * len(minor_sorted))
+    n_excl = int((1.0 - N) * len(minor_sorted))
 
     active = np.ones(len(abs_errors), dtype=bool)
     active[minor_sorted[:n_excl]] = False
@@ -86,16 +88,16 @@ def kabena_safe(
     >>> assert m >= 2
     """
     abs_errors = np.asarray(abs_errors, dtype=float)
-    n          = len(abs_errors)
-    minor_idx  = np.where(abs_errors <= K)[0]
+    n = len(abs_errors)
+    minor_idx = np.where(abs_errors <= K)[0]
 
     if len(minor_idx) == 0:
         return np.ones(n, dtype=bool), n
 
-    order        = np.argsort(abs_errors[minor_idx])[::-1]
+    order = np.argsort(abs_errors[minor_idx])[::-1]
     minor_sorted = minor_idx[order]
-    n_excl       = int((1.0 - N) * len(minor_sorted))
-    n_excl       = min(n_excl, n - min_active)   # clip de sécurité
+    n_excl = int((1.0 - N) * len(minor_sorted))
+    n_excl = min(n_excl, n - min_active)  # clip de sécurité
 
     active = np.ones(n, dtype=bool)
     active[minor_sorted[:n_excl]] = False
@@ -226,4 +228,3 @@ def calibrate_K_noisy(
     losses = np.asarray(losses_epoch1, dtype=float)
     q = min(10.0 + noise_factor * estimated_noise_pct * 100, q_cap)
     return float(np.percentile(losses, q))
-

@@ -14,18 +14,21 @@ APRÈS K-ABENA (+2 lignes, rien d'autre ne change) :
 """
 
 from __future__ import annotations
+
 from typing import Optional
 
 try:
     import torch
     import torch.nn.functional as F
+
     HAS_TORCH = True
 except ImportError:
     HAS_TORCH = False
 
 import numpy as np
-from kabena_ml.core.filter import kabena_filter, kabena_safe, calibrate_K
+
 from kabena_ml.core.config import KabenaConfig
+from kabena_ml.core.filter import kabena_filter, kabena_safe
 
 
 def _require_torch():
@@ -68,8 +71,7 @@ def kabena_safe_torch(
 ) -> tuple["torch.Tensor", int]:
     """Version sécurisée — garantit m >= min_active."""
     _require_torch()
-    active_np, m = kabena_safe(losses.detach().cpu().numpy(), K=K, N=N,
-                                min_active=min_active)
+    active_np, m = kabena_safe(losses.detach().cpu().numpy(), K=K, N=N, min_active=min_active)
     return torch.tensor(active_np, dtype=torch.bool, device=losses.device), m
 
 
@@ -102,9 +104,9 @@ class KabenaTrainer:
         epochs: int = 100,
     ):
         _require_torch()
-        self.model   = model
-        self.cfg     = config
-        self.epochs  = epochs
+        self.model = model
+        self.cfg = config
+        self.epochs = epochs
         self.history = []
 
         _opt = optimizer or torch.optim.SGD
@@ -124,8 +126,7 @@ class KabenaTrainer:
             losses = self._compute_losses(logits, y)
 
             # ── K-ABENA : 2 lignes ──────────────────────────────────────
-            mask, m = kabena_safe_torch(losses, self.cfg.K, self.cfg.N,
-                                        self.cfg.min_active)
+            mask, m = kabena_safe_torch(losses, self.cfg.K, self.cfg.N, self.cfg.min_active)
             if m == 0:
                 continue
             L_KA = losses[mask].mean()
@@ -136,10 +137,10 @@ class KabenaTrainer:
             self.optimizer.step()
 
             record = {
-                "epoch":    epoch,
-                "loss":     L_KA.item(),
-                "m":        m,
-                "n":        len(y),
+                "epoch": epoch,
+                "loss": L_KA.item(),
+                "m": m,
+                "n": len(y),
                 "gain_pct": round((1 - m / len(y)) * 100),
             }
             if val_data:
@@ -147,10 +148,11 @@ class KabenaTrainer:
             self.history.append(record)
 
             if self.cfg.verbose and epoch % 10 == 0:
-                print(f"Ep {epoch:4d} | loss={record['loss']:.4f} | "
-                      f"actifs={m}/{len(y)} | gain={record['gain_pct']}%"
-                      + (f" | val_acc={record['val_acc']:.4f}"
-                         if val_data else ""))
+                print(
+                    f"Ep {epoch:4d} | loss={record['loss']:.4f} | "
+                    f"actifs={m}/{len(y)} | gain={record['gain_pct']}%"
+                    + (f" | val_acc={record['val_acc']:.4f}" if val_data else "")
+                )
 
         return self.history
 
@@ -163,8 +165,7 @@ class KabenaTrainer:
                 logits = self.model(X_b)
                 losses = self._compute_losses(logits, y_b)
 
-                mask, m = kabena_safe_torch(losses, self.cfg.K, self.cfg.N,
-                                            self.cfg.min_active)
+                mask, m = kabena_safe_torch(losses, self.cfg.K, self.cfg.N, self.cfg.min_active)
                 if m == 0:
                     continue
                 L_KA = losses[mask].mean()
@@ -179,16 +180,15 @@ class KabenaTrainer:
             if not epoch_losses:
                 continue
             record = {
-                "epoch":    epoch,
-                "loss":     float(np.mean(epoch_losses)),
-                "m":        epoch_m,
-                "n":        epoch_n,
+                "epoch": epoch,
+                "loss": float(np.mean(epoch_losses)),
+                "m": epoch_m,
+                "n": epoch_n,
                 "gain_pct": round((1 - epoch_m / epoch_n) * 100),
             }
             self.history.append(record)
             if self.cfg.verbose and epoch % 10 == 0:
-                print(f"Ep {epoch:4d} | loss={record['loss']:.4f} | "
-                      f"gain={record['gain_pct']}%")
+                print(f"Ep {epoch:4d} | loss={record['loss']:.4f} | " f"gain={record['gain_pct']}%")
         return self.history
 
     def evaluate(self, X, y) -> float:
@@ -207,19 +207,24 @@ class KabenaTrainer:
         fig, axes = plt.subplots(1, 2, figsize=(12, 4))
         epochs = [r["epoch"] for r in self.history]
 
-        axes[0].plot(epochs, [r["loss"] for r in self.history],
-                     color="#1DD0FF", lw=2)
+        axes[0].plot(epochs, [r["loss"] for r in self.history], color="#1DD0FF", lw=2)
         axes[0].set(xlabel="Époque", ylabel="Loss K-ABENA", title="Loss")
         axes[0].grid(alpha=0.2)
 
         pct_active = [r["m"] / r["n"] * 100 for r in self.history]
         axes[1].plot(epochs, pct_active, color="#1D9E75", lw=2)
         axes[1].axhline(100, color="#B4B2A9", lw=1, ls="--", alpha=0.5)
-        axes[1].fill_between(epochs, pct_active, 100, alpha=0.15,
-                             color="#EF9F27", label="Gain computationnel")
-        axes[1].set(xlabel="Époque", ylabel="Observations actives (%)",
-                    title="Observations actives m/n", ylim=(0, 105))
-        axes[1].legend(); axes[1].grid(alpha=0.2)
+        axes[1].fill_between(
+            epochs, pct_active, 100, alpha=0.15, color="#EF9F27", label="Gain computationnel"
+        )
+        axes[1].set(
+            xlabel="Époque",
+            ylabel="Observations actives (%)",
+            title="Observations actives m/n",
+            ylim=(0, 105),
+        )
+        axes[1].legend()
+        axes[1].grid(alpha=0.2)
 
         fig.suptitle("Monitoring K-ABENA", fontweight="bold")
         fig.tight_layout()

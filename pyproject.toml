@@ -44,7 +44,12 @@ exclude = ["configs*", "tutorials*", "experiments*", "tests*"]
 line-length = 100
 [tool.ruff]
 line-length = 100
+
+[tool.ruff.lint]
 select = ["E", "F", "I"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/test_torch.py" = ["E402"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts   = "-v --tb=short --cov=kabena_ml"

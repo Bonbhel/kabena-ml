@@ -5,8 +5,9 @@ Configuration centralisée K-ABENA — lecture depuis dict, YAML ou JSON.
 """
 
 from __future__ import annotations
+
 import json
-from dataclasses import dataclass, field, asdict
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Literal
 
@@ -31,19 +32,22 @@ class KabenaConfig:
     >>> cfg = KabenaConfig.from_yaml("kabena.yaml")
     >>> cfg = KabenaConfig.from_dict({"K": 0.20, "N": 0.0})
     """
-    K          : float = 0.15
-    N          : float = 0.0
-    task       : Literal["regression", "classification"] = "classification"
-    min_active : int   = 1
-    stratified : bool  = False
-    verbose    : bool  = False
+
+    K: float = 0.15
+    N: float = 0.0
+    task: Literal["regression", "classification"] = "classification"
+    min_active: int = 1
+    stratified: bool = False
+    verbose: bool = False
 
     def __post_init__(self):
-        assert 0.0 <= self.N <= 1.0,   f"N doit être dans [0, 1], reçu : {self.N}"
-        assert self.K > 0,             f"K doit être > 0, reçu : {self.K}"
-        assert self.min_active >= 1,   f"min_active doit être >= 1"
-        assert self.task in ("regression", "classification"), \
-               f"task doit être 'regression' ou 'classification', reçu : {self.task!r}"
+        assert 0.0 <= self.N <= 1.0, f"N doit être dans [0, 1], reçu : {self.N}"
+        assert self.K > 0, f"K doit être > 0, reçu : {self.K}"
+        assert self.min_active >= 1, "min_active doit être >= 1"
+        assert self.task in (
+            "regression",
+            "classification",
+        ), f"task doit être 'regression' ou 'classification', reçu : {self.task!r}"
 
     # ── Constructeurs alternatifs ─────────────────────────────────────────
 
@@ -51,6 +55,7 @@ class KabenaConfig:
     def from_yaml(cls, path: str | Path) -> "KabenaConfig":
         """Charge la configuration depuis un fichier YAML."""
         import yaml  # optionnel
+
         with open(path) as f:
             data = yaml.safe_load(f)
         return cls.from_dict(data)
@@ -75,6 +80,7 @@ class KabenaConfig:
 
     def to_yaml(self, path: str | Path) -> None:
         import yaml
+
         with open(path, "w") as f:
             yaml.dump(self.to_dict(), f, default_flow_style=False)
 
@@ -83,5 +89,7 @@ class KabenaConfig:
             json.dump(self.to_dict(), f, indent=2)
 
     def __repr__(self) -> str:
-        return (f"KabenaConfig(K={self.K}, N={self.N}, task={self.task!r}, "
-                f"stratified={self.stratified}, verbose={self.verbose})")
+        return (
+            f"KabenaConfig(K={self.K}, N={self.N}, task={self.task!r}, "
+            f"stratified={self.stratified}, verbose={self.verbose})"
+        )

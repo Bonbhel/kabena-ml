@@ -11,17 +11,20 @@ APRÈS K-ABENA (+1 callback) :
 """
 
 from __future__ import annotations
+
 from typing import Optional
 
 try:
     import tensorflow as tf
+
     HAS_TF = True
 except ImportError:
     HAS_TF = False
 
 import numpy as np
-from kabena_ml.core.filter import kabena_filter, kabena_safe
+
 from kabena_ml.core.config import KabenaConfig
+from kabena_ml.core.filter import kabena_filter
 
 
 def _require_tf():
@@ -51,10 +54,10 @@ class KabenaCallback:
 
     def __init__(self, K: float = 0.20, N: float = 0.0, verbose: bool = False):
         _require_tf()
-        self.K       = K
-        self.N       = N
+        self.K = K
+        self.N = N
         self.verbose = verbose
-        self.stats_  = []
+        self.stats_ = []
         self._epoch_m = []
         self._epoch_n = []
 
@@ -68,10 +71,10 @@ class KabenaCallback:
     def on_epoch_end(self, epoch, logs=None):
         if self._epoch_m:
             rec = {
-                "epoch":    epoch,
-                "mean_m":   np.mean(self._epoch_m),
-                "mean_gain": np.mean([1 - m/n
-                                      for m, n in zip(self._epoch_m, self._epoch_n)]) * 100,
+                "epoch": epoch,
+                "mean_m": np.mean(self._epoch_m),
+                "mean_gain": np.mean([1 - m / n for m, n in zip(self._epoch_m, self._epoch_n)])
+                * 100,
             }
             self.stats_.append(rec)
             if self.verbose:
@@ -83,8 +86,7 @@ class KabenaCallback:
         if not self.stats_:
             return "Aucune statistique disponible."
         gains = [r["mean_gain"] for r in self.stats_]
-        return (f"Gain moyen: {np.mean(gains):.1f}% | "
-                f"Époques: {len(self.stats_)}")
+        return f"Gain moyen: {np.mean(gains):.1f}% | " f"Époques: {len(self.stats_)}"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -114,9 +116,9 @@ class KabenaTFTrainer:
         task: str = "classification",
     ):
         _require_tf()
-        self.model   = model
-        self.cfg     = config
-        self.task    = task
+        self.model = model
+        self.cfg = config
+        self.task = task
         self.history = []
         self.optimizer = optimizer or tf.keras.optimizers.SGD(0.01)
 
@@ -134,7 +136,7 @@ class KabenaTFTrainer:
         val_data: Optional[tuple] = None,
     ) -> list[dict]:
         """Boucle GradientTape + K-ABENA."""
-        n = len(y)
+        # n = len(y)
         ds = tf.data.Dataset.from_tensor_slices((X, y)).batch(batch_size).shuffle(1000)
 
         for epoch in range(epochs):
@@ -153,8 +155,7 @@ class KabenaTFTrainer:
                     # ──────────────────────────────────────────────────
 
                 grads = tape.gradient(L_KA, self.model.trainable_variables)
-                self.optimizer.apply_gradients(
-                    zip(grads, self.model.trainable_variables))
+                self.optimizer.apply_gradients(zip(grads, self.model.trainable_variables))
 
                 m = int(tf.reduce_sum(tf.cast(mask, tf.int32)).numpy())
                 epoch_losses.append(float(L_KA.numpy()))
@@ -165,17 +166,16 @@ class KabenaTFTrainer:
                 continue
 
             record = {
-                "epoch":    epoch,
-                "loss":     float(np.mean(epoch_losses)),
-                "m":        epoch_m,
-                "n":        epoch_n,
+                "epoch": epoch,
+                "loss": float(np.mean(epoch_losses)),
+                "m": epoch_m,
+                "n": epoch_n,
                 "gain_pct": round((1 - epoch_m / epoch_n) * 100),
             }
             self.history.append(record)
 
             if self.cfg.verbose and epoch % 10 == 0:
-                print(f"Ép {epoch:4d} | loss={record['loss']:.4f} | "
-                      f"gain={record['gain_pct']}%")
+                print(f"Ép {epoch:4d} | loss={record['loss']:.4f} | " f"gain={record['gain_pct']}%")
 
         return self.history
 
@@ -183,8 +183,6 @@ class KabenaTFTrainer:
 
     def _compute_losses(self, logits, y):
         if self.task == "regression":
-            return tf.reduce_mean(tf.square(logits - tf.cast(y, tf.float32)),
-                                  axis=-1)
+            return tf.reduce_mean(tf.square(logits - tf.cast(y, tf.float32)), axis=-1)
         else:
-            return tf.keras.losses.sparse_categorical_crossentropy(
-                y, logits, from_logits=True)
+            return tf.keras.losses.sparse_categorical_crossentropy(y, logits, from_logits=True)

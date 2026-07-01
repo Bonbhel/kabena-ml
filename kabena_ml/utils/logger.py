@@ -5,9 +5,10 @@ Monitoring K-ABENA — KabenaLogger, plot_stats, kabena_report.
 """
 
 from __future__ import annotations
+
 import csv
-import json
 import datetime
+import json
 from pathlib import Path
 from typing import Optional
 
@@ -43,20 +44,20 @@ class KabenaLogger:
         **extra,
     ):
         record = {
-            "epoch":    epoch,
-            "loss":     round(float(loss), 6),
-            "m":        int(m),
-            "n":        int(n),
+            "epoch": epoch,
+            "loss": round(float(loss), 6),
+            "m": int(m),
+            "n": int(n),
             "gain_pct": round((1 - m / n) * 100, 2),
-            "K_used":   K_used,
-            "N_used":   N_used,
+            "K_used": K_used,
+            "N_used": N_used,
             **extra,
         }
         self.records.append(record)
 
     def save(self) -> Path:
         base = self.log_dir / f"run_{self._run_id}"
-        csv_path  = base.with_suffix(".csv")
+        csv_path = base.with_suffix(".csv")
         json_path = base.with_suffix(".json")
 
         if self.records:
@@ -74,10 +75,10 @@ class KabenaLogger:
         if not self.records:
             return {}
         return {
-            "epochs":        len(self.records),
-            "final_loss":    self.records[-1]["loss"],
+            "epochs": len(self.records),
+            "final_loss": self.records[-1]["loss"],
             "mean_gain_pct": round(np.mean([r["gain_pct"] for r in self.records]), 2),
-            "mean_m":        round(np.mean([r["m"] for r in self.records]), 1),
+            "mean_m": round(np.mean([r["m"] for r in self.records]), 1),
         }
 
 
@@ -101,7 +102,7 @@ def plot_stats(
         raise ImportError("matplotlib requis : pip install matplotlib")
 
     fig, axes = plt.subplots(1, 2, figsize=(12, 4))
-    epochs    = [r["epoch"] for r in history]
+    epochs = [r["epoch"] for r in history]
 
     axes[0].plot(epochs, [r["loss"] for r in history], color="#1DD0FF", lw=2)
     axes[0].set(xlabel="Époque", ylabel="Loss K-ABENA", title="Convergence")
@@ -110,10 +111,13 @@ def plot_stats(
     pct = [r["m"] / r["n"] * 100 for r in history]
     axes[1].plot(epochs, pct, color="#1D9E75", lw=2, label="Actifs (%)")
     axes[1].axhline(100, color="#B4B2A9", lw=1, ls="--", alpha=0.5)
-    axes[1].fill_between(epochs, pct, 100, alpha=0.12, color="#EF9F27",
-                         label="Gain comp.")
-    axes[1].set(xlabel="Époque", ylabel="Observations actives (%)",
-                title="Observations actives m/n", ylim=(0, 108))
+    axes[1].fill_between(epochs, pct, 100, alpha=0.12, color="#EF9F27", label="Gain comp.")
+    axes[1].set(
+        xlabel="Époque",
+        ylabel="Observations actives (%)",
+        title="Observations actives m/n",
+        ylim=(0, 108),
+    )
     axes[1].legend(fontsize=9)
     axes[1].grid(alpha=0.2)
 
@@ -130,7 +134,10 @@ def plot_stats(
 
 # ─────────────────────────────────────────────────────────────────────────────
 def benchmark_KN(
-    X_train, y_train, X_test, y_test,
+    X_train,
+    y_train,
+    X_test,
+    y_test,
     estimator_fn,
     K_range: list[float] = None,
     N_range: list[float] = None,
@@ -151,8 +158,9 @@ def benchmark_KN(
     >>> res.plot_heatmap()
     >>> print(res.best_params())
     """
+    from sklearn.metrics import accuracy_score, f1_score, mean_squared_error
+
     from kabena_ml.integrations.sklearn_wrapper import KabenaWrapper
-    from sklearn.metrics import accuracy_score, mean_squared_error, f1_score
 
     K_range = K_range or [0.05, 0.10, 0.15, 0.20, 0.30]
     N_range = N_range or [0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
@@ -162,8 +170,7 @@ def benchmark_KN(
 
     for K in K_range:
         for N in N_range:
-            est = KabenaWrapper(estimator_fn(), K=K, N=N,
-                                epochs=epochs, task=task)
+            est = KabenaWrapper(estimator_fn(), K=K, N=N, epochs=epochs, task=task)
             est.fit(X_train, y_train)
             preds = est.predict(X_test)
 
@@ -190,7 +197,7 @@ class BenchmarkResult:
         self.records = records
         self.K_range = K_range
         self.N_range = N_range
-        self.metric  = metric
+        self.metric = metric
 
     def best_params(self) -> dict:
         return max(self.records, key=lambda r: r["score"])
@@ -202,9 +209,14 @@ class BenchmarkResult:
             raise ImportError("matplotlib requis")
 
         import numpy as np
-        scores = np.array([[r["score"] for r in self.records
-                            if r["K"] == K and r["N"] == N][0]
-                           for N in self.N_range for K in self.K_range])
+
+        scores = np.array(
+            [
+                [r["score"] for r in self.records if r["K"] == K and r["N"] == N][0]
+                for N in self.N_range
+                for K in self.K_range
+            ]
+        )
         scores = scores.reshape(len(self.N_range), len(self.K_range))
 
         fig, ax = plt.subplots(figsize=(9, 5))
@@ -213,7 +225,8 @@ class BenchmarkResult:
         ax.set_xticklabels([f"{k:.2f}" for k in self.K_range])
         ax.set_yticks(range(len(self.N_range)))
         ax.set_yticklabels([f"{n:.1f}" for n in self.N_range])
-        ax.set_xlabel("Seuil K"); ax.set_ylabel("N (conservé)")
+        ax.set_xlabel("Seuil K")
+        ax.set_ylabel("N (conservé)")
         ax.set_title(f"Grille K×N — {self.metric}", fontweight="bold")
         plt.colorbar(im, ax=ax, label=self.metric)
 

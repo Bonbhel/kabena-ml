@@ -15,12 +15,12 @@ Après K-ABENA (+1 ligne, même API) :
 """
 
 from __future__ import annotations
+
 import numpy as np
 from sklearn.base import BaseEstimator, clone
 from sklearn.utils.validation import check_is_fitted
 
-from kabena_ml.core.filter import kabena_filter, kabena_safe, calibrate_K
-from kabena_ml.core.config import KabenaConfig
+from kabena_ml.core.filter import calibrate_K, kabena_safe
 
 
 class KabenaWrapper(BaseEstimator):
@@ -54,18 +54,18 @@ class KabenaWrapper(BaseEstimator):
         stratified: bool = False,
         verbose: bool = False,
     ):
-        self.estimator  = estimator
-        self.K          = K
-        self.N          = N
-        self.epochs     = epochs
-        self.task       = task
+        self.estimator = estimator
+        self.K = K
+        self.N = N
+        self.epochs = epochs
+        self.task = task
         self.stratified = stratified
-        self.verbose    = verbose
+        self.verbose = verbose
 
     def fit(self, X, y):
         X, y = np.asarray(X, dtype=float), np.asarray(y)
         self.estimator_ = clone(self.estimator)
-        self.history_   = []
+        self.history_ = []
         self.n_features_in_ = X.shape[1]
 
         # Première époque pour calibrer K si "auto"
@@ -88,19 +88,22 @@ class KabenaWrapper(BaseEstimator):
             self.estimator_.fit(X_s, y_s)
             loss_val = errors[active].mean()
             gain_pct = round((1 - m / len(X)) * 100)
-            self.history_.append({"epoch": epoch, "loss": loss_val,
-                                  "m": m, "n": len(X), "gain_pct": gain_pct})
+            self.history_.append(
+                {"epoch": epoch, "loss": loss_val, "m": m, "n": len(X), "gain_pct": gain_pct}
+            )
 
             if self.verbose and epoch % 20 == 0:
-                print(f"Ep {epoch:4d} | loss={loss_val:.4f} | "
-                      f"actifs={m}/{len(X)} | gain={gain_pct}%")
+                print(
+                    f"Ep {epoch:4d} | loss={loss_val:.4f} | "
+                    f"actifs={m}/{len(X)} | gain={gain_pct}%"
+                )
 
-        self.K_  = K_
+        self.K_ = K_
         self.stats_ = {
-            "mean_m":        np.mean([r["m"] for r in self.history_]),
+            "mean_m": np.mean([r["m"] for r in self.history_]),
             "mean_gain_pct": np.mean([r["gain_pct"] for r in self.history_]),
-            "epochs":        self.epochs,
-            "K_used":        K_,
+            "epochs": self.epochs,
+            "K_used": K_,
         }
         return self
 
@@ -143,5 +146,9 @@ class KabenaWrapper(BaseEstimator):
 
 
 # ── Alias court ──────────────────────────────────────────────────────────────
-KabenaSKLearn   = KabenaWrapper
-KabenaStratified = lambda est, **kw: KabenaWrapper(est, stratified=True, **kw)
+KabenaSKLearn = KabenaWrapper
+# KabenaStratified = lambda est, **kw: KabenaWrapper(est, stratified=True, **kw)
+
+
+def KabenaStratified(est, **kw):
+    return KabenaWrapper(est, stratified=True, **kw)
