@@ -24,7 +24,7 @@ from kabena_ml.core.filter import (
 )
 
 __version__ = "1.2.0"
-__author__  = "M. Bonbhel — YekoElite University / NeuroSoft IA"
-__email__   = "contact@neurosoft-ia.com"
+__author__ = "M. Bonbhel — YekoElite University / NeuroSoft IA"
+__email__ = "contact@neurosoft-ia.com"
 
 __all__ = ["kabena_filter", "kabena_safe", "calibrate_K", "calibrate_K_noisy", "KabenaConfig"]

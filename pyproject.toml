@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 name = "kabena-ml"
 version = "1.2.0"
 description = "K-ABENA: K-Adaptive Backpropagation with Error-based N-exclusion Algorithm"
-authors = [{name = "M. Bonbhel", email = "bonbhel@gmail.com"}]
+authors = [{name = "M. Bonbhel", email = "contact@neurosoft-ia.com"}]
 license = {text = "MIT"}
 readme = "README.md"
 requires-python = ">=3.9"
@@ -42,6 +42,7 @@ include = ["kabena_ml*"]
 exclude = ["configs*", "tutorials*", "experiments*", "tests*"]
 [tool.black]
 line-length = 100
+target-version = ["py39", "py310", "py311"]
 [tool.ruff]
 line-length = 100
 
