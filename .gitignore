@@ -18,3 +18,7 @@ outputs/
 
 # Dev local (non versionné)
 constraints-dev-local.txt
+# Coverage
+.coverage
+coverage.xml
+htmlcov/
