@@ -1,7 +1,6 @@
 [build-system]
 requires = ["setuptools>=68", "wheel"]
-build-backend = "setuptools.backends.legacy:build"
-
+build-backend = "setuptools.build_meta"
 [project]
 name = "kabena-ml"
 version = "1.1.0"
@@ -27,7 +26,6 @@ dependencies = [
     "scipy>=1.10",
     "pyyaml>=6.0",
 ]
-
 [project.optional-dependencies]
 sklearn = ["scikit-learn>=1.3"]
 torch   = ["torch>=2.0"]
@@ -35,19 +33,18 @@ tf      = ["tensorflow>=2.12"]
 mlops   = ["mlflow>=2.8", "hydra-core>=1.3", "omegaconf>=2.3", "dvc>=3.0"]
 dev     = ["pytest>=7.4", "pytest-cov>=4.1", "black", "ruff", "jupyter"]
 all     = ["kabena-ml[sklearn,torch,tf,mlops,dev]"]
-
 [project.urls]
-Homepage   = "https://github.com/yekoelite/kabena-ml"
-Repository = "https://github.com/yekoelite/kabena-ml"
+Homepage   = "https://github.com/Bonbhel/kabena-ml"
+Repository = "https://github.com/Bonbhel/kabena-ml"
 Book       = "https://yekoelite.com/kabena-book"
-
+[tool.setuptools.packages.find]
+include = ["kabena_ml*"]
+exclude = ["configs*", "tutorials*", "experiments*", "tests*"]
 [tool.black]
 line-length = 100
-
 [tool.ruff]
 line-length = 100
 select = ["E", "F", "I"]
-
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts   = "-v --tb=short --cov=kabena_ml"
