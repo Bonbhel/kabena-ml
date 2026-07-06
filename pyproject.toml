@@ -1,56 +1,33 @@
 [build-system]
-requires = ["setuptools>=68", "wheel"]
+requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
+
 [project]
 name = "kabena"
-version = "1.2.0"
-description = "K-ABENA: K-Adaptive Backpropagation with Error-based N-exclusion Algorithm"
-authors = [{name = "M. Bonbhel", email = "contact@neurosoft-ia.com"}]
-license = {text = "MIT"}
+version = "2.1.0"
+description = "K-ABENA : exclusion compensée d'échantillons par perte — même modèle, ~28% de calcul en moins (estimateur Horvitz-Thompson sans biais)."
 readme = "README.md"
-requires-python = ">=3.9"
-keywords = ["machine-learning", "deep-learning", "gradient", "optimization", "K-ABENA", "noise-robustness", "label-noise"]
-classifiers = [
-    "Development Status :: 5 - Production/Stable",
-    "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: MIT License",
-    "Programming Language :: Python :: 3",
-    "Topic :: Scientific/Engineering :: Artificial Intelligence",
-    "Topic :: Scientific/Engineering :: Mathematics",
-    "Natural Language :: French",
-    "Natural Language :: English",
-    "Operating System :: OS Independent",
-]
-dependencies = [
-    "numpy>=1.24",
-    "scipy>=1.10",
-    "pyyaml>=6.0",
-]
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Jean-Francois Bonbhel", email = "bonbhel@gmail.com" }]
+keywords = ["machine-learning", "selective-backpropagation", "sample-selection", "horvitz-thompson", "sgd"]
+dependencies = ["numpy>=1.24"]
+
 [project.optional-dependencies]
 sklearn = ["scikit-learn>=1.3"]
-torch   = ["torch>=2.0"]
-tf      = ["tensorflow>=2.12"]
-mlops   = ["mlflow>=2.8", "hydra-core>=1.3", "omegaconf>=2.3", "dvc>=3.0"]
-dev     = ["pytest>=7.4", "pytest-cov>=4.1", "black", "ruff", "jupyter", "build", "twine"]
-all     = ["kabena[sklearn,torch,tf,mlops,dev]"]
+torch = ["torch>=2.0"]
+tensorflow = ["tensorflow>=2.15"]
+huggingface = ["transformers>=4.40", "datasets>=2.19"]
+dev = ["pytest>=8", "scikit-learn>=1.3"]
+
 [project.urls]
-Homepage   = "https://github.com/Bonbhel/kabena-ml"
-Repository = "https://github.com/Bonbhel/kabena-ml"
-Book       = "https://yekoelite.com/kabena-book"
+Homepage = "https://github.com/Bonbhel/kabena-ml"
+Documentation = "https://github.com/Bonbhel/kabena-ml/tree/main/tutorials"
+Tutorials = "https://github.com/Bonbhel/kabena-ml/tree/main/tutorials"
+Reproducibility = "https://github.com/Bonbhel/kabena-ml/tree/main/validation"
+Preprint = "https://github.com/Bonbhel/kabena-ml/blob/main/paper/KABENA_v3_preprint.pdf"
+Changelog = "https://github.com/Bonbhel/kabena-ml/blob/main/CHANGELOG.md"
+Issues = "https://github.com/Bonbhel/kabena-ml/issues"
+
 [tool.setuptools.packages.find]
 include = ["kabena*"]
-exclude = ["configs*", "tutorials*", "experiments*", "tests*"]
-[tool.black]
-line-length = 100
-target-version = ["py39", "py310", "py311"]
-[tool.ruff]
-line-length = 100
-
-[tool.ruff.lint]
-select = ["E", "F", "I"]
-
-[tool.ruff.lint.per-file-ignores]
-"tests/test_torch.py" = ["E402"]
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-addopts   = "-v --tb=short --cov=kabena"
