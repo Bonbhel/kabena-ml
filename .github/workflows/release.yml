@@ -1,0 +1,46 @@
+name: test-and-publish
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "${{ matrix.python-version }}" }
+      - run: pip install -e ".[dev]"
+      - name: Tests unitaires (13 tests)
+        run: python tests/test_core.py
+      - name: Validation smoke — les 5 tables du preprint
+        run: QUICK=1 python validation/run_all.py
+
+  publish:
+    needs: test
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write        # Trusted Publishing PyPI (OIDC) — aucun token stocké
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - run: pip install build twine
+      - run: python -m build
+      - name: Vérifier le rendu README pour PyPI
+        run: twine check dist/*
+      - name: Publier sur PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+      - name: Créer la GitHub Release avec les artefacts
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+          generate_release_notes: true
