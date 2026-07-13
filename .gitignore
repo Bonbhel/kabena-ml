@@ -4,3 +4,12 @@ __pycache__/
 .DS_Store
 dist/
 build/
+.venv*/
+.DS_Store
+*.egg-info/
+__pycache__/
+.ipynb_checkpoints/
+.venv*/
+.DS_Store
+*.egg-info/
+__pycache__/

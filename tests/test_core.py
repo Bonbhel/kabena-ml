@@ -4,6 +4,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 import numpy as np
 from kabena import Kabena, kabena_filter, kabena_safe
 
+
 def test_two_line_api_shapes():
     kb = Kabena(seed=0)
     losses = np.random.default_rng(0).exponential(0.3, 500)
@@ -100,6 +101,24 @@ def test_dl_integrations_import_without_deps():
     import kabena.integrations.keras as kk
     import kabena.integrations.huggingface as kh
     assert hasattr(kt, "KabenaTorch") and hasattr(kk, "KabenaKeras") and hasattr(kh, "KabenaTrainer")
+
+def test_helpful_error_on_K():
+    """Kabena(K=...) must fail with a message that mentions k_percentile."""
+    try:
+        Kabena(K=0.5)
+    except TypeError as e:
+        assert "k_percentile" in str(e), f"unknow message  : : {e}"
+    else:
+        raise AssertionError("Kabena(K=...) should have raised a TypeError")
+
+def test_helpful_error_on_typo():
+    """A close typo must suggest the correct parameter name."""
+    try:
+        Kabena(alpah=0.3)
+    except TypeError as e:
+        assert "alpha" in str(e), f"unknow message  : {e}"
+    else:
+        raise AssertionError("Kabena(alpah=...) should have raised a TypeError")
 
 if __name__ == "__main__":
     fns = [v for k, v in sorted(globals().items()) if k.startswith("test_")]

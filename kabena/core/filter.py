@@ -13,8 +13,51 @@ import numpy as np
 from .config import KabenaConfig
 from .gate import resolve_strategy
 from . import sampling
+import difflib
 
 __all__ = ["Kabena", "kabena_filter", "kabena_safe"]
+
+
+_VALID_PARAMS = {"N", "strategy", "seed", "k_percentile", "alpha", "min_active"}
+
+
+# Erreurs prévisibles → explication ciblée (la terminologie du papier
+# diffère volontairement de l'API : K est un seuil CALCULÉ, pas un réglage)
+_PARAM_HINTS = {
+    "K": (
+        "there is no 'K' parameter: the threshold K from the paper is "
+        "computed internally at every select() call. What you can set is "
+        "'k_percentile' (a percentile in [0, 100], default 40.0) that "
+        "determines where K lands on the current loss distribution"
+    ),
+    "k": "did you mean 'k_percentile'? (the threshold K itself is computed internally)",
+    "percentile": "did you mean 'k_percentile'?",
+    "threshold": "the threshold is computed internally -- tune 'k_percentile' instead",
+    "n": "did you mean 'N' (uppercase), the sampling ratio in (0, 1)?",
+    "ratio": "did you mean 'N', the sampling ratio in (0, 1)?",
+    "floor": "did you mean 'alpha', the defensive floor in (0, 1]?",
+}
+
+
+def _validate_params(advanced: dict) -> None:
+    """Raise a helpful TypeError for any unknown keyword argument."""
+    for name in advanced:
+        if name in _VALID_PARAMS:
+            continue
+        hint = _PARAM_HINTS.get(name)
+        if hint is None:
+            close = difflib.get_close_matches(name, _VALID_PARAMS, n=1)
+            hint = (
+                f"did you mean '{close[0]}'?"
+                if close
+                else f"valid parameters: {', '.join(sorted(_VALID_PARAMS))}"
+            )
+        raise TypeError(
+            f"Kabena() got an unexpected parameter '{name}' -- {hint}. "
+            "Full parameter reference: "
+            "https://github.com/Bonbhel/kabena-ml#parameters"
+        )
+
 
 
 class Kabena:
@@ -22,6 +65,7 @@ class Kabena:
 
     def __init__(self, N: float = 0.3, strategy: str = "auto",
                  seed: int | None = None, **advanced):
+        _validate_params(advanced)
         self.cfg = KabenaConfig(N=N, strategy=strategy, seed=seed, **advanced)
         self.cfg.validate()
         self._rng = np.random.default_rng(seed)

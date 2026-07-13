@@ -2,6 +2,25 @@
 
 Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
+## [2.1.1] - 2026-07-12
+
+### Fixed
+- Friendly, actionable error messages for unknown constructor parameters
+  (e.g. `Kabena(K=...)` now explains `k_percentile` instead of a bare
+  dataclass `TypeError`).
+- `kabena[torch]` extra now installs a coherent torch/numpy pair on every
+  platform via environment markers (Intel macOS: torch ≤ 2.2.2 + numpy < 2;
+  elsewhere: torch ≥ 2.3, NumPy 2 supported).
+- Import-time ABI guard warns with exact fix commands when an existing
+  environment pairs torch < 2.3 with numpy ≥ 2.
+- Repository hygiene: `.venv*/`, `__pycache__/`, `.DS_Store`, `*.egg-info/`,
+  `.ipynb_checkpoints/` removed from tracking and ignored.
+
+### Changed
+- `Preprint` project URL now points to the published arXiv record
+  (arXiv:2607.05903).
+
+
 ## [2.1.0] — 2026-07-05
 
 Saut de version public : **1.2.0 → 2.1.0**. La 2.0.0 fut un jalon interne
