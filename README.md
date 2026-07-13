@@ -13,6 +13,14 @@ design-unbiased — preuves et mesures dans le
 
 ## La promesse : 2 lignes
 
+**EN —** Note: the threshold *K* from the paper is **not** a constructor
+argument — it is recomputed internally at every `select()` call. The knob
+you tune is `k_percentile` (default `40.0`).
+
+**FR —** Note : le seuil *K* du papier n'est **pas** un argument du
+constructeur — il est recalculé en interne à chaque appel de `select()`.
+ßLe réglage accessible est `k_percentile` (défaut `40.0`).
+
 ```python
 from kabena import Kabena
 kb = Kabena()                                   # 1. défauts du preprint (v3, N=0.3)
@@ -67,6 +75,19 @@ python experiments/playground.py --regime fraude --strategy v3   # bac à sable
 ```
 
 ## Installation
+
+**EN —** `pip install kabena` (core: numpy only, works with numpy 1.22 → 2.x).
+Framework extras: `pip install 'kabena[torch]'` (note the quotes — required by
+zsh, the default macOS shell). On Intel Macs, torch stops at 2.2.2 and the
+extra automatically pins `numpy<2` accordingly; on every other platform the
+extra installs torch ≥ 2.3, which supports NumPy 2.
+
+**FR —** `pip install kabena` (cœur : numpy seul, compatible numpy 1.22 → 2.x).
+Extras framework : `pip install 'kabena[torch]'` (guillemets obligatoires sous
+zsh, le shell par défaut sur Mac). Sur Mac Intel, torch s'arrête à 2.2.2 et
+l'extra épingle automatiquement `numpy<2` en conséquence ; sur toute autre
+plateforme, l'extra installe torch ≥ 2.3, compatible NumPy 2.
+
 
 ```bash
 pip install kabena                     # coeur (numpy seul)

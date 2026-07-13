@@ -16,8 +16,43 @@ retardées', voir tutorials/mlp/niveau2_script_pytorch.py).
 from __future__ import annotations
 import numpy as np
 from ..core import Kabena
+import warnings
 
 __all__ = ["KabenaTorch"]
+
+
+def _warn_if_numpy_torch_abi_mismatch():
+    """Detect the torch<2.3 + numpy>=2 pairing and explain the fix.
+
+    torch wheels < 2.3 are compiled against the NumPy 1.x ABI; importing
+    them under NumPy 2.x triggers undefined behavior ("may crash").
+    We warn loudly with the exact fix commands instead of letting the
+    user hit a cryptic crash later.
+    """
+    try:
+        import numpy
+        import torch
+    except ImportError:
+        return  # the existing import guard handles missing deps
+
+    np_major = int(numpy.__version__.split(".")[0])
+    torch_mm = tuple(
+        int(x) for x in torch.__version__.split("+")[0].split(".")[:2]
+    )
+    if np_major >= 2 and torch_mm < (2, 3):
+        warnings.warn(
+            "kabena[torch]: incompatible pairing detected -- "
+            f"torch {torch.__version__} was built against NumPy 1.x, "
+            f"but NumPy {numpy.__version__} is installed. "
+            "This can crash at runtime. Fix (choose ONE):\n"
+            "  pip install 'numpy<2'          # keep this torch "
+            "(required on Intel macOS, where torch stops at 2.2.2)\n"
+            "  pip install --upgrade torch    # torch>=2.3 supports NumPy 2 "
+            "(not available on Intel macOS)\n"
+            "Details: https://github.com/Bonbhel/kabena-ml#installation",
+            UserWarning,
+            stacklevel=2,
+        )
 
 
 class KabenaTorch:
